@@ -48,7 +48,6 @@ jobs:
       - name: Handle Dependencies
         run: |
           mv temp_modules/vendor ./vendor
-          mv temp_modules/device ./device
           rm -rf temp_modules
       - name: Set Release Info & Custom Version
         run: |
