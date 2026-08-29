@@ -1,4 +1,4 @@
-name: Build KernelSU-Next Reno7 Docker Kernel
+name: Build Reno7 Docker Kernel
 
 on:
   workflow_dispatch:
@@ -84,29 +84,9 @@ jobs:
           curl -LSs https://github.com/miaizhe/Kernel_oppo_sm7325_Reno10/releases/download/boot/user.h -o include/linux/sched/user.h
           patch -p1 < 001.GKI-below-6.12-fix_sysvipc_kabi_3_4_5.patch
           echo "添加docker补丁完成"
-          curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU-Next/next/kernel/setup.sh" | bash -s legacy
-          curl -LSs "https://raw.githubusercontent.com/JackA1ltman/NonGKI_Kernel_Build_2nd/mainline/Patches/syscall_hook_patches.sh" -o syscall_hook_patches.sh
-          chmod +x syscall_hook_patches.sh
-          bash syscall_hook_patches.sh
-          sed -i '/ksu_handle_devpts/d' drivers/tty/pty.c
           sed -i 's/obj-$(CONFIG_KPROBES)/obj-y/g' kernel/Makefile
-          echo "正在用命令重构并清空报错的 selinux_hide.c..."
-          cat << 'EOF' > drivers/kernelsu/feature/selinux_hide.c
-          #include <linux/types.h>
-          #include <linux/kernel.h>
-          bool ksu_selinux_hide_status_get(void) { return false; }
-          void ksu_selinux_hide_status_set(bool enable) { }
-          int ksu_selinux_hide_init(void) { return 0; }
-          void ksu_selinux_hide_exit(void) { }
-          bool ksu_selinux_hide_enable(void) { return true; }
-          EOF
           make O=out CC="clang" LLVM=1 defconfig  
-          ./scripts/config --file out/.config \
-            -d CONFIG_KSU_TRACEPOINT_HOOK \
-            -e CONFIG_KSU_MANUAL_HOOK \
-            -e CONFIG_KPROBES
-          make O=out CC="clang" LLVM=1 -j$(nproc) out/security/selinux/flask.h
-          cp out/security/selinux/flask.h security/selinux/include/
+          ./scripts/config --file out/.config -e CONFIG_KPROBES
           make O=out CC="clang" LLVM=1 -j$(nproc)
       - name: Package with AnyKernel3
         run: |
@@ -120,27 +100,27 @@ jobs:
           cd AnyKernel3
           rm anykernel.sh
           wget https://github.com/miaizhe/Kernel_oppo_sm7325_Reno10/releases/download/boot/anykernel.sh
-          zip -r9 ../KernelSU-Next-Reno7-Docker-${{ env.BUILD_DATE }}.zip * -x .git* README.md *placeholder
+          zip -r9 ../Reno7-Docker-${{ env.BUILD_DATE }}.zip * -x .git* README.md *placeholder
 
       - name: Upload Flashable Kernel
         uses: actions/upload-artifact@v6
         with:
           name: ReSukiSU_Reno7_Docker.img
           path: |
-            KernelSU-Next-Reno7-Docker-${{ env.BUILD_DATE }}.zip
+            Reno7-Docker-${{ env.BUILD_DATE }}.zip
 
       - name: Upload Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.BUILD_DATE }}
-          name: KernelSU Kernel for Reno7 (${{ env.BUILD_DATE }})
+          name: Reno7 Docker Kernel (${{ env.BUILD_DATE }})
           body: |
             - 编译日期: ${{ env.BUILD_DATE }}
             - 核心版本: 5.4.210
-            - 包含功能: ReSukiSU,KernelSU-Next
+            - 包含功能: Docker
             - 欢迎刷入芜夕wuxi的内核！祝你玩的愉快！
             - 文件：分为带SuSFS的和不带SukiSU的，zip为ak3包，img文件为打包好的镜像，Docker为带Docker的,test为测试版
           files: |
-              KernelSU-Next-Reno7-Docker-${{ env.BUILD_DATE }}.zip
+            Reno7-Docker-${{ env.BUILD_DATE }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
