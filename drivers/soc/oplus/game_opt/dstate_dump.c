@@ -55,21 +55,8 @@ static void g_dstate_dump_stack(struct task_struct *task, u64 delay_ms)
 	unsigned long wakee_entries[MAX_DSTATE_STACK_TRACE_DEPTH];
 	char buf[256];
 
-	struct stack_trace waker_dummy;
-	struct stack_trace wakee_dummy;
-	waker_dummy.nr_entries = 0;
-	waker_dummy.max_entries = MAX_DSTATE_STACK_TRACE_DEPTH;
-	waker_dummy.entries = &waker_entries[0];
-	waker_dummy.skip = 0;
-	save_stack_trace(&waker_dummy);
-	waker_nr_entries = waker_dummy.nr_entries;
-
-	wakee_dummy.nr_entries = 0;
-	wakee_dummy.max_entries = MAX_DSTATE_STACK_TRACE_DEPTH;
-	wakee_dummy.entries = &wakee_entries[0];
-	wakee_dummy.skip = 0;
-	save_stack_trace_tsk(task, &wakee_dummy);
-	wakee_nr_entries = wakee_dummy.nr_entries;
+	waker_nr_entries = stack_trace_save(waker_entries, MAX_DSTATE_STACK_TRACE_DEPTH, 0);
+	wakee_nr_entries = stack_trace_save_tsk(task, wakee_entries, MAX_DSTATE_STACK_TRACE_DEPTH, 0);
 	caller = (void *)get_wchan(task);
 
 	snprintf(buf, sizeof(buf), "delay_ms=%d, waker_nr_entries=%d, wakee_nr_entries=%d"
