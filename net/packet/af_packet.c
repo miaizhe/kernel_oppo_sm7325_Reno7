@@ -2147,9 +2147,11 @@ static int packet_rcv(struct sk_buff *skb, struct net_device *dev,
     }
 //#endif /* OPLUS_FEATURE_DHCP */
 
+#ifdef CONFIG_ANDROID_VENDOR_HOOKS
 	trace_android_vh_check_dhcp_pkt(sk, skb, dev, pt, &do_drop);
 	if (do_drop)
 		goto drop;
+#endif
 
 	spin_lock(&sk->sk_receive_queue.lock);
 	po->stats.stats1.tp_packets++;
