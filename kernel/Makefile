@@ -132,9 +132,6 @@ obj-$(CONFIG_OPLUS_FEATURE_FRAME_BOOST) += tuning/
 KASAN_SANITIZE_stackleak.o := n
 KCOV_INSTRUMENT_stackleak.o := n
 
-#ifdef OPLUS_FEATURE_SCHED_ASSIST
-obj-$(CONFIG_OPLUS_FEATURE_UIFRIST_HEAVYLOAD) += special_opt/
-#endif /* OPLUS_FEATURE_SCHED_ASSIST */
 
 $(obj)/configs.o: $(obj)/config_data.gz
 
