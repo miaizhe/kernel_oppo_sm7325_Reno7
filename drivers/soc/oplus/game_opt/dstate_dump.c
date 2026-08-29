@@ -48,6 +48,7 @@ static void g_dump_wakee_stack(unsigned int wakee_nr_entries, unsigned long *wak
 
 static void g_dstate_dump_stack(struct task_struct *task, u64 delay_ms)
 {
+#ifdef CONFIG_STACKTRACE
 	void * caller;
 	unsigned int waker_nr_entries;
 	unsigned long waker_entries[MAX_DSTATE_STACK_TRACE_DEPTH];
@@ -67,6 +68,7 @@ static void g_dstate_dump_stack(struct task_struct *task, u64 delay_ms)
 
 	g_dump_waker_stack(waker_nr_entries, waker_entries);
 	g_dump_wakee_stack(wakee_nr_entries, wakee_entries);
+#endif
 }
 
 void set_dstate_interested_threads(pid_t *tids, int num) {
