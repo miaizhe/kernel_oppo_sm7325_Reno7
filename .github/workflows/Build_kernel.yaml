@@ -103,7 +103,8 @@ jobs:
           make O=out CC="clang" LLVM=1 defconfig  
           ./scripts/config --file out/.config \
             -d CONFIG_KSU_TRACEPOINT_HOOK \
-            -e CONFIG_KSU_MANUAL_HOOK
+            -e CONFIG_KSU_MANUAL_HOOK \
+            -e CONFIG_KPROBES
           make O=out CC="clang" LLVM=1 -j$(nproc)
       - name: Package with AnyKernel3
         run: |
