@@ -90,10 +90,6 @@ jobs:
           bash syscall_hook_patches.sh
           sed -i '/ksu_handle_devpts/d' drivers/tty/pty.c
           sed -i 's/obj-$(CONFIG_KPROBES)/obj-y/g' kernel/Makefile
-          echo "正在生成 flask.h..."
-          cc -Isecurity/selinux/include scripts/selinux/genheaders/genheaders.c -o /tmp/genheaders
-          /tmp/genheaders security/selinux/flask.h security/selinux/av_permissions.h
-          cp security/selinux/flask.h security/selinux/include/
           echo "正在用命令重构并清空报错的 selinux_hide.c..."
           cat << 'EOF' > drivers/kernelsu/feature/selinux_hide.c
           #include <linux/types.h>
@@ -109,6 +105,9 @@ jobs:
             -d CONFIG_KSU_TRACEPOINT_HOOK \
             -e CONFIG_KSU_MANUAL_HOOK \
             -e CONFIG_KPROBES
+          make O=out CC="clang" LLVM=1 -j$(nproc) out/scripts/selinux/genheaders/genheaders
+          out/scripts/selinux/genheaders/genheaders security/selinux/flask.h security/selinux/av_permissions.h
+          cp security/selinux/flask.h security/selinux/include/
           make O=out CC="clang" LLVM=1 -j$(nproc)
       - name: Package with AnyKernel3
         run: |
