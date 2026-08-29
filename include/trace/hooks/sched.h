@@ -95,7 +95,7 @@ DECLARE_RESTRICTED_HOOK(android_rvh_find_busiest_group,
 #define trace_android_rvh_prepare_prio_fork(p)
 #define trace_android_rvh_finish_prio_fork(p)
 #define trace_android_rvh_rtmutex_prepare_setprio(p, pi_task)
-#define trace_android_rvh_set_user_nice(p, nice)
+#define trace_android_rvh_set_user_nice(p, nice, allowed)
 #define trace_android_rvh_setscheduler(p)
 #define trace_android_rvh_check_preempt_wakeup(p, ignore)
 #define trace_android_rvh_check_preempt_tick(p, ideal_runtime)
