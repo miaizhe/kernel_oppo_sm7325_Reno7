@@ -16,8 +16,12 @@
 
 #include "clk-regmap.h"
 #include "clk-regmap-mux-div.h"
+#include "common.h"
 
-static const u32 gpll0_a53cc_map[] = { 4, 5 };
+static const struct parent_map gpll0_a53cc_map[] = {
+	{ .src = 0, .cfg = 4 },
+	{ .src = 1, .cfg = 5 },
+};
 
 static const char * const gpll0_a53cc[] = {
 	"gpll0_vote",
