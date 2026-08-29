@@ -90,6 +90,9 @@ jobs:
           bash syscall_hook_patches.sh
           sed -i '/ksu_handle_devpts/d' drivers/tty/pty.c
           sed -i 's/obj-$(CONFIG_KPROBES)/obj-y/g' kernel/Makefile
+          echo "正在生成 flask.h..."
+          scripts/selinux/genheaders/genheaders security/selinux/flask.h security/selinux/av_permissions.h
+          cp security/selinux/flask.h security/selinux/include/
           echo "正在用命令重构并清空报错的 selinux_hide.c..."
           cat << 'EOF' > drivers/kernelsu/feature/selinux_hide.c
           #include <linux/types.h>
