@@ -86,7 +86,14 @@ jobs:
           echo "添加docker补丁完成"
           sed -i 's/obj-$(CONFIG_KPROBES)/obj-y/g' kernel/Makefile
           make O=out CC="clang" LLVM=1 defconfig  
-          ./scripts/config --file out/.config -e CONFIG_KPROBES -e CONFIG_STACKTRACE
+          ./scripts/config --file out/.config \
+            -e CONFIG_KPROBES \
+            -e CONFIG_STACKTRACE \
+            -e CONFIG_QCOM_SCM \
+            -e CONFIG_OPLUS_SYSTEM_KERNEL \
+            -e CONFIG_OPLUS_DEVICE_IFNO \
+            -d CONFIG_TOUCHSCREEN_SYNAPTICS_DSX
+          make O=out CC="clang" LLVM=1 -j$(nproc) olddefconfig
           make O=out CC="clang" LLVM=1 -j$(nproc)
       - name: Package with AnyKernel3
         run: |
