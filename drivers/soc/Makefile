@@ -30,7 +30,9 @@ obj-$(CONFIG_ARCH_ZX)		+= zte/
 #ifdef VENDOR_EDIT
 obj-$(CONFIG_OPLUS_SYSTEM_KERNEL)	+= oplus/system/
 #obj-y				+= oplus/device_info/
-#obj-y						+= oplus/sensor/
+#ifdef OPLUS_FEATURE_SENSOR_SMEM
+obj-y						+= oplus/sensor/
+#endif
 #endif /* VENDOR_EDIT */
 
 #ifdef CONFIG_OPLUS_SENSOR_CONSUMER_IR
